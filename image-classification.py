@@ -43,7 +43,10 @@ model.add(Flatten())
 model.add(Dense(101, activation='softmax'))
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-model.fit(train_dt, epochs=5, validation_data=test_dt)
+model.fit(train_dt,
+          epochs=5,
+          validation_data=test_dt,
+          validation_steps=len(test_dt))
 
 # ============================================ Fine tuning
 
@@ -57,7 +60,10 @@ output = Dense(101, activation='softmax')(x)
 model = tf.keras.models.Model(input, output)
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-model.fit(train_dt, epochs=3, validation_data=test_dt)
+model.fit(train_dt,
+          epochs=5,
+          validation_data=test_dt,
+          validation_steps=len(test_dt))
 
 # ========================================= Dropout
 
@@ -72,4 +78,7 @@ output = Dense(101, activation='softmax')(x)
 model = tf.keras.models.Model(input, output)
 
 model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-model.fit(train_dt, epochs=3, validation_data=test_dt)
+model.fit(train_dt,
+          epochs=5,
+          validation_data=test_dt,
+          validation_steps=len(test_dt))
