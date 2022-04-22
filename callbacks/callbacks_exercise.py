@@ -5,7 +5,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.preprocessing import image_dataset_from_directory
 from tensorflow.keras.applications import EfficientNetB0, resnet50
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau,LearningRateScheduler
+from tensorflow.keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau, LearningRateScheduler
 import numpy as np
 import pandas as pd
 
@@ -45,6 +45,7 @@ model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']
 
 custom_callbacks = [EarlyStopping(patience=5, monitor='val_loss'),
                     ModelCheckpoint('./model.h5', save_best_only=True, monitor='val_loss'),
+                    LearningRateScheduler(lambda epoch: 1e-8 * 10 ** (epoch / 20)),
                     ReduceLROnPlateau(monitor='val_loss', patience=2, min_delta=0.0001)]
 
 model.fit(train_dt, validation_data=test_dt, callbacks=custom_callbacks, epochs=10)
