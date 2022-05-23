@@ -4,6 +4,7 @@ from tensorflow.keras.layers import Input, Dense, Conv2D, MaxPooling2D, Flatten
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.callbacks import ModelCheckpoint
 from tensorflow.keras.utils import plot_model
+import pandas as pd
 
 (train_data, test_data), ds_info = tfds.load(name='mnist', split=['train', 'test'], as_supervised=True, with_info=True)
 print(len(ds_info.features['label'].names))
@@ -41,6 +42,9 @@ model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=
 plot_model(model, "./model-architecture-picture/image-classifier.png", show_shapes=True)
 
 modelCheckpoint = ModelCheckpoint('./model/image-classifier.h5', monitor='val_loss', save_best_only=True)
-model.fit(train_data, validation_data=test_data, epochs=6, callbacks=modelCheckpoint)
+result = model.fit(train_data, validation_data=test_data, epochs=6, callbacks=modelCheckpoint)
 
-print()
+print(result.history)
+
+dt = pd.DataFrame(result.history)
+dt.plot()
