@@ -22,6 +22,8 @@ image_data_generator = ImageDataGenerator(rescale=1. / 255,
                                           shear_range=0.2,
                                           rotation_range=0.2)
 
+# incase we use class_mode='binary' we must 1 node in the last layer
+# incase we use class_mode='categorical' we must have 2 nodes in the last layer
 train_dt = image_data_generator.flow_from_directory(directory=train_directory,
                                                     class_mode='categorical',
                                                     batch_size=32,
