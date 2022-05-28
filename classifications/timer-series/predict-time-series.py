@@ -37,7 +37,7 @@ shuffle_buffer = 1000
 
 
 def get_windowed_data(series, window_size, batch_size, shuffle_buffer):
-    dt = tf.data.Dataset.from_tensor_slices(prices)
+    dt = tf.data.Dataset.from_tensor_slices(series)
     dt = dt.window(window_size, shift=1, drop_remainder=True)
     dt = dt.flat_map(lambda window: window.batch(window_size))  # make each window a batch
     dt = dt.map(lambda window: (window[:-1], window[-1:]))  # consider the last element as label and the rest as window

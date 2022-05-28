@@ -12,7 +12,9 @@ plt.imshow(train_images[0])
 plt.show()"""
 
 # ----------------------------------------- Conv2D without Lambda
+train_images = train_images / 255.0
 train_images = tf.expand_dims(train_images,axis=-1)
+test_images = test_images / 255.0
 test_images = tf.expand_dims(test_images,axis=-1)
 
 model = tf.keras.Sequential([

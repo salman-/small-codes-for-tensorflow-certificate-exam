@@ -39,21 +39,20 @@ with open("/tmp/training_cleaned.csv") as csvfile:
         num_sentences = num_sentences + 1
         corpus.append(list_item)
 
-#--------------------------------------------- Tokenization
+# --------------------------------------------- Tokenization
 
-sentences=[]
-labels=[]
+sentences = []
+labels = []
 random.shuffle(corpus)
 for x in range(training_size):
     sentences.append(corpus[x][0])
     labels.append(corpus[x][1])
 
-
 tokenizer = Tokenizer()
 tokenizer.fit_on_texts(sentences)
 
 word_index = tokenizer.word_index
-vocab_size=len(word_index)
+vocab_size = len(word_index)
 
 sequences = tokenizer.texts_to_sequences(sentences)
 padded = pad_sequences(sequences, maxlen=max_length, padding=padding_type, truncating=trunc_type)
@@ -65,14 +64,14 @@ training_sequences = padded[split:training_size]
 test_labels = labels[0:split]
 training_labels = labels[split:training_size]
 
-#------------------------------- Convert to Tensors
-test_sequences = tf.convert_to_tensor(test_sequences,tf.int32)
-training_sequences = tf.convert_to_tensor(training_sequences,tf.int32)
+# ------------------------------- Convert to Tensors
+test_sequences = tf.convert_to_tensor(test_sequences, tf.int32)
+training_sequences = tf.convert_to_tensor(training_sequences, tf.int32)
 
-test_labels = tf.convert_to_tensor(test_labels,tf.int32)
-training_labels = tf.convert_to_tensor(training_labels,tf.int32)
+test_labels = tf.convert_to_tensor(test_labels, tf.int32)
+training_labels = tf.convert_to_tensor(training_labels, tf.int32)
 
-#--------------------------------- Download pre-learned model
+# --------------------------------- Download pre-learned model
 
 # Get the 100 dimension version of GloVe from Stanford
 """
@@ -80,7 +79,7 @@ training_labels = tf.convert_to_tensor(training_labels,tf.int32)
     https://storage.googleapis.com/laurencemoroney-blog.appspot.com/glove.6B.100d.txt \
     -O /tmp/glove.6B.100d.txt
 """
-#------------------------------- Get weights of pre-learned model
+# ------------------------------- Get weights of pre-learned model
 
 embeddings_index = {}
 
@@ -91,17 +90,18 @@ with open('/tmp/glove.6B.100d.txt') as f:
         coefs = np.asarray(values[1:], dtype='float32')
         embeddings_index[word] = coefs
 
-embeddings_matrix = np.zeros((vocab_size+1, embedding_dim))
+embeddings_matrix = np.zeros((vocab_size + 1, embedding_dim))
 
 for word, i in word_index.items():
     embedding_vector = embeddings_index.get(word)
     if embedding_vector is not None:
         embeddings_matrix[i] = embedding_vector
 
-#------------------------------------------- NN
+# ------------------------------------------- NN
 
 model = tf.keras.Sequential([
-    tf.keras.layers.Embedding(vocab_size+1, embedding_dim, input_length=max_length, weights=[embeddings_matrix], trainable=False),
+    tf.keras.layers.Embedding(vocab_size + 1, embedding_dim, input_length=max_length, weights=[embeddings_matrix],
+                              trainable=False),
     tf.keras.layers.Dropout(0.2),
     tf.keras.layers.Conv1D(64, 5, activation='relu'),
     tf.keras.layers.MaxPooling1D(pool_size=4),
@@ -109,14 +109,11 @@ model = tf.keras.Sequential([
     tf.keras.layers.Dense(128, activation='relu'),
     tf.keras.layers.Dense(1, activation='sigmoid')
 ])
-model.compile(loss='binary_crossentropy',optimizer='adam',metrics=['accuracy'])
+model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy'])
 model.summary()
 
 num_epochs = 50
-history = model.fit(training_sequences, training_labels, epochs=num_epochs, validation_data=(test_sequences, test_labels), verbose=2)
+history = model.fit(training_sequences, training_labels, epochs=num_epochs,
+                    validation_data=(test_sequences, test_labels), verbose=2)
 
 print("Training Complete")
-
-
-
-

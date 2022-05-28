@@ -73,10 +73,6 @@ history = model.fit(xs, ys, epochs=20, verbose=1)
 
 # ------------------------------------- Prediction by model
 
-# ------------------------------------- Prediction by model
-
-# ------------------------------------- Prediction by model
-
 seed_text = "I've got a bad feeling about this"
 seed_text = "The true purpose of deep learning is making memes because"
 next_words = 100
@@ -85,7 +81,7 @@ token_list = tokenizer.texts_to_sequences([seed_text])[0]
 for _ in range(next_words):
     pedded_token_list = pad_sequences([token_list], maxlen=max_sequence_len - 1, padding='pre')
     predicted = model.predict(pedded_token_list, verbose=0)
-    classes_x=np.argmax(predicted,axis=1)
+    classes_x = np.argmax(predicted, axis=1)
     output_word = ""
     for word, index in tokenizer.word_index.items():
         if index == classes_x:
